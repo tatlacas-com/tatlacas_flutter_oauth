@@ -10,7 +10,7 @@ import 'token_request.dart';
 import 'token_response.dart';
 
 const MethodChannel _channel =
-    MethodChannel('tatlacas_flutter_oauth');
+    MethodChannel('tatlacas.lib/tatlacas_flutter_oauth');
 
 class MethodChannelFlutterAppAuth extends FlutterAppAuthPlatform {
   @override
