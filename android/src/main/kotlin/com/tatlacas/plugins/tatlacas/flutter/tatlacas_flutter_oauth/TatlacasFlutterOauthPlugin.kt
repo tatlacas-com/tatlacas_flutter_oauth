@@ -75,7 +75,7 @@ public class TatlacasFlutterOauthPlugin: FlutterPlugin, MethodCallHandler,Activi
     val authConfigBuilder = AppAuthConfiguration.Builder()
     authConfigBuilder.setConnectionBuilder(ConnectionBuilderForTesting.INSTANCE)
     insecureAuthorizationService = AuthorizationService(applicationContext!!, authConfigBuilder.build())
-    val channel = MethodChannel(binaryMessenger, "crossingthestreams.io/flutter_appauth")
+    val channel = MethodChannel(binaryMessenger, "tatlacas.lib/tatlacas_flutter_oauth")
     channel.setMethodCallHandler(this)
   }
 
