@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:tatlacas_flutter_oauth/tatlacas_flutter_oauth.dart';
+import 'package:tatlacas_flutter_oauth_example/auth_service.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,6 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
+  AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -50,7 +52,19 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Okay okay'),
+              OutlineButton(
+                onPressed: () {
+                  _authService.authenticate();
+                },
+                child: Text('Sign in'),
+              )
+            ],
+          ),
         ),
       ),
     );

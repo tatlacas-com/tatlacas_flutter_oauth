@@ -43,6 +43,9 @@ android {
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'com.tatlacas.app.droid.stay.manager'
+        ]
     }
 
     buildTypes {
