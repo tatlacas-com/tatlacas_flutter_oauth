@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:tatlacas_flutter_oauth/tatlacas_flutter_oauth.dart';
 import 'package:tatlacas_flutter_oauth_example/auth_service.dart';
 
 void main() {
