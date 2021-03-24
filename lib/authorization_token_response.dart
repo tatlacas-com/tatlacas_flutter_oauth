@@ -5,7 +5,7 @@ class AuthorizationTokenResponse extends TokenResponse {
   AuthorizationTokenResponse(
     String accessToken,
     String refreshToken,
-    DateTime accessTokenExpirationDateTime,
+    DateTime? accessTokenExpirationDateTime,
     String idToken,
     String tokenType,
     this.authorizationAdditionalParameters,

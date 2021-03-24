@@ -20,7 +20,7 @@ class TokenResponse {
   /// To ensure applications have continue to use valid access tokens, they
   /// will generally use the refresh token to get a new access token
   /// before it expires.
-  final DateTime accessTokenExpirationDateTime;
+  final DateTime? accessTokenExpirationDateTime;
 
   /// The id token returned by the authorization server.
   final String idToken;
