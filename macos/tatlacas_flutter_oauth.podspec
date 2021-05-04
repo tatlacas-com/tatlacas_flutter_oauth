@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'tatlacas_flutter_oauth'
   s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.summary          = 'TatlaCas Flutter OAuth2'
   s.description      = <<-DESC
-A new flutter plugin project.
+TatlaCas Flutter OAuth2
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
@@ -15,6 +15,7 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
+  s.dependency 'AppAuth', '1.3.1'
 
   s.platform = :osx, '10.11'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
