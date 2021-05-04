@@ -1,4 +1,4 @@
-#import <Flutter/Flutter.h>
+#import <FlutterMacOS/FlutterMacOS.h>
 #import <AppAuth/AppAuth.h>
 
 @interface TatlacasFlutterOauthPlugin : NSObject<FlutterPlugin>

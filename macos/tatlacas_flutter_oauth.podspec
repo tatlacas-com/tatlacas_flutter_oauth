@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'tatlacas_flutter_oauth'
   s.version          = '0.0.1'
-  s.summary          = 'TatlaCas Flutter OAuth2'
+  s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC
-TatlaCas Flutter OAuth2
+A new flutter plugin project.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }

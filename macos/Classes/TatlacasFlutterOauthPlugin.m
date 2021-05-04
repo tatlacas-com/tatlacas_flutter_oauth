@@ -1,5 +1,5 @@
+#import <FlutterMacOS/FlutterMacOS.h>
 #import "TatlacasFlutterOauthPlugin.h"
-#import "OIDExternalUserAgentIOSNoSSO.h"
 
 
 @interface ArgumentProcessor : NSObject
@@ -87,11 +87,11 @@ NSString *const AUTHORIZE_ERROR_MESSAGE_FORMAT = @"Failed to authorize: %@";
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     channel = [FlutterMethodChannel
-               methodChannelWithName:@"tatlacas.lib/tatlacas_flutter_oauth"
-               binaryMessenger:[registrar messenger]];
+            methodChannelWithName:@"tatlacas.lib/tatlacas_flutter_oauth"
+                  binaryMessenger:[registrar messenger]];
     TatlacasFlutterOauthPlugin* instance = [[TatlacasFlutterOauthPlugin alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];
-    [registrar addApplicationDelegate:instance];
+//    [registrar addApplicationDelegate:instance]; todo check
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -124,66 +124,65 @@ NSString *const AUTHORIZE_ERROR_MESSAGE_FORMAT = @"Failed to authorize: %@";
     }
     if(requestParameters.serviceConfigurationParameters != nil) {
         OIDServiceConfiguration *serviceConfiguration =
-        [[OIDServiceConfiguration alloc]
-         initWithAuthorizationEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"authorizationEndpoint"]]
-         tokenEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"tokenEndpoint"]]];
+                [[OIDServiceConfiguration alloc]
+                        initWithAuthorizationEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"authorizationEndpoint"]]
+                                        tokenEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"tokenEndpoint"]]];
         [self performAuthorization:serviceConfiguration clientId:requestParameters.clientId clientSecret:requestParameters.clientSecret scopes:requestParameters.scopes redirectUrl:requestParameters.redirectUrl additionalParameters:requestParameters.additionalParameters preferEphemeralSession:requestParameters.preferEphemeralSession result:result exchangeCode:exchangeCode];
     } else if (requestParameters.discoveryUrl) {
         NSURL *discoveryUrl = [NSURL URLWithString:requestParameters.discoveryUrl];
         [OIDAuthorizationService discoverServiceConfigurationForDiscoveryURL:discoveryUrl
                                                                   completion:^(OIDServiceConfiguration *_Nullable configuration,
-                                                                               NSError *_Nullable error) {
-                                                                      
+                                                                          NSError *_Nullable error) {
+
                                                                       if (!configuration) {
                                                                           [self finishWithDiscoveryError:error result:result];
                                                                           return;
                                                                       }
-                                                                      
+
                                                                       [self performAuthorization:configuration clientId:requestParameters.clientId clientSecret:requestParameters.clientSecret scopes:requestParameters.scopes redirectUrl:requestParameters.redirectUrl additionalParameters:requestParameters.additionalParameters preferEphemeralSession:requestParameters.preferEphemeralSession result:result exchangeCode:exchangeCode];
                                                                   }];
     } else {
         NSURL *issuerUrl = [NSURL URLWithString:requestParameters.issuer];
         [OIDAuthorizationService discoverServiceConfigurationForIssuer:issuerUrl
                                                             completion:^(OIDServiceConfiguration *_Nullable configuration,
-                                                                         NSError *_Nullable error) {
-                                                                
+                                                                    NSError *_Nullable error) {
+
                                                                 if (!configuration) {
                                                                     [self finishWithDiscoveryError:error result:result];
                                                                     return;
                                                                 }
-                                                                
-            [self performAuthorization:configuration clientId:requestParameters.clientId clientSecret:requestParameters.clientSecret scopes:requestParameters.scopes redirectUrl:requestParameters.redirectUrl additionalParameters:requestParameters.additionalParameters preferEphemeralSession:requestParameters.preferEphemeralSession result:result exchangeCode:exchangeCode];
+
+                                                                [self performAuthorization:configuration clientId:requestParameters.clientId clientSecret:requestParameters.clientSecret scopes:requestParameters.scopes redirectUrl:requestParameters.redirectUrl additionalParameters:requestParameters.additionalParameters preferEphemeralSession:requestParameters.preferEphemeralSession result:result exchangeCode:exchangeCode];
                                                             }];
     }
-    
-    
+
+
 }
 
 - (void)performAuthorization:(OIDServiceConfiguration *)serviceConfiguration clientId:(NSString*)clientId clientSecret:(NSString*)clientSecret scopes:(NSArray *)scopes redirectUrl:(NSString*)redirectUrl additionalParameters:(NSDictionary *)additionalParameters preferEphemeralSession:(BOOL)preferEphemeralSession result:(FlutterResult)result exchangeCode:(BOOL)exchangeCode{
     OIDAuthorizationRequest *request =
-    [[OIDAuthorizationRequest alloc] initWithConfiguration:serviceConfiguration
-                                                  clientId:clientId
-                                              clientSecret:clientSecret
-                                                    scopes:scopes
-                                               redirectURL:[NSURL URLWithString:redirectUrl]
-                                              responseType:OIDResponseTypeCode
-                                      additionalParameters:additionalParameters];
-    UIViewController *rootViewController =
-    [UIApplication sharedApplication].delegate.window.rootViewController;
+            [[OIDAuthorizationRequest alloc] initWithConfiguration:serviceConfiguration
+                                                          clientId:clientId
+                                                      clientSecret:clientSecret
+                                                            scopes:scopes
+                                                       redirectURL:[NSURL URLWithString:redirectUrl]
+                                                      responseType:OIDResponseTypeCode
+                                              additionalParameters:additionalParameters];
+    [NSApplication sharedApplication].mainWindow.contentViewController;
     if(exchangeCode) {
-        NSObject<OIDExternalUserAgent> *agent = [self userAgentWithViewController:rootViewController useEphemeralSession:preferEphemeralSession];
-        
+        NSObject<OIDExternalUserAgent> *agent = [self userAgentWithViewController];
+
         _currentAuthorizationFlow = [OIDAuthState authStateByPresentingAuthorizationRequest:request externalUserAgent:agent callback:^(OIDAuthState *_Nullable authState,
-                   NSError *_Nullable error) {
+                NSError *_Nullable error) {
             if(authState) {
                 result([self processResponses:authState.lastTokenResponse authResponse:authState.lastAuthorizationResponse]);
-                
+
             } else {
                 [self finishWithError:AUTHORIZE_AND_EXCHANGE_CODE_ERROR_CODE message:[self formatMessageWithError:AUTHORIZE_ERROR_MESSAGE_FORMAT error:error] result:result];
             }
         }];
     } else {
-        NSObject<OIDExternalUserAgent> *agent = [self userAgentWithViewController:rootViewController useEphemeralSession:preferEphemeralSession];
+        NSObject<OIDExternalUserAgent> *agent = [self userAgentWithViewController];
         _currentAuthorizationFlow = [OIDAuthorizationService presentAuthorizationRequest:request externalUserAgent:agent callback:^(OIDAuthorizationResponse *_Nullable authorizationResponse, NSError *_Nullable error) {
             if(authorizationResponse) {
                 NSMutableDictionary *processedResponse = [[NSMutableDictionary alloc] init];
@@ -198,13 +197,9 @@ NSString *const AUTHORIZE_ERROR_MESSAGE_FORMAT = @"Failed to authorize: %@";
     }
 }
 
-- (id<OIDExternalUserAgent>)userAgentWithViewController:(UIViewController *)rootViewController useEphemeralSession:(BOOL)useEphemeralSession {
-    if (useEphemeralSession) {
-        return [[OIDExternalUserAgentIOSNoSSO alloc]
-                initWithPresentingViewController:rootViewController];
-    }
-    return [[OIDExternalUserAgentIOS alloc]
-            initWithPresentingViewController:rootViewController];
+- (id <OIDExternalUserAgent>)userAgentWithViewController {
+    return [[OIDExternalUserAgentMac alloc]
+            init];
 }
 
 - (NSString *) formatMessageWithError:(NSString *)messageFormat error:(NSError * _Nullable)error {
@@ -226,61 +221,61 @@ NSString *const AUTHORIZE_ERROR_MESSAGE_FORMAT = @"Failed to authorize: %@";
     TokenRequestParameters *requestParameters = [[TokenRequestParameters alloc] initWithArguments:arguments];
     if(requestParameters.serviceConfigurationParameters != nil) {
         OIDServiceConfiguration *serviceConfiguration =
-        [[OIDServiceConfiguration alloc]
-         initWithAuthorizationEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"authorizationEndpoint"]]
-         tokenEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"tokenEndpoint"]]];
+                [[OIDServiceConfiguration alloc]
+                        initWithAuthorizationEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"authorizationEndpoint"]]
+                                        tokenEndpoint:[NSURL URLWithString:requestParameters.serviceConfigurationParameters[@"tokenEndpoint"]]];
         [self performTokenRequest:serviceConfiguration requestParameters:requestParameters result:result];
     } else if (requestParameters.discoveryUrl) {
         NSURL *discoveryUrl = [NSURL URLWithString:requestParameters.discoveryUrl];
-        
+
         [OIDAuthorizationService discoverServiceConfigurationForDiscoveryURL:discoveryUrl
                                                                   completion:^(OIDServiceConfiguration *_Nullable configuration,
-                                                                               NSError *_Nullable error) {
-                                                                      
+                                                                          NSError *_Nullable error) {
+
                                                                       if (!configuration) {
                                                                           [self finishWithDiscoveryError:error result:result];
                                                                           return;
                                                                       }
-                                                                      
+
                                                                       [self performTokenRequest:configuration requestParameters:requestParameters result:result];
                                                                   }];
     } else {
         NSURL *issuerUrl = [NSURL URLWithString:requestParameters.issuer];
         [OIDAuthorizationService discoverServiceConfigurationForIssuer:issuerUrl
                                                             completion:^(OIDServiceConfiguration *_Nullable configuration,
-                                                                         NSError *_Nullable error) {
-                                                                
+                                                                    NSError *_Nullable error) {
+
                                                                 if (!configuration) {
                                                                     [self finishWithDiscoveryError:error result:result];
                                                                     return;
                                                                 }
-                                                                
+
                                                                 [self performTokenRequest:configuration requestParameters:requestParameters result:result];
                                                             }];
     }
-    
+
 }
 
 - (void)performTokenRequest:(OIDServiceConfiguration *)serviceConfiguration requestParameters:(TokenRequestParameters *)requestParameters result:(FlutterResult)result {
     OIDTokenRequest *tokenRequest =
-    [[OIDTokenRequest alloc] initWithConfiguration:serviceConfiguration
-                                         grantType:requestParameters.grantType
-                                 authorizationCode:requestParameters.authorizationCode
-                                       redirectURL:[NSURL URLWithString:requestParameters.redirectUrl]
-                                          clientID:requestParameters.clientId
-                                      clientSecret:requestParameters.clientSecret
-                                            scopes:requestParameters.scopes
-                                      refreshToken:requestParameters.refreshToken
-                                      codeVerifier:requestParameters.codeVerifier
-                              additionalParameters:requestParameters.additionalParameters];
+            [[OIDTokenRequest alloc] initWithConfiguration:serviceConfiguration
+                                                 grantType:requestParameters.grantType
+                                         authorizationCode:requestParameters.authorizationCode
+                                               redirectURL:[NSURL URLWithString:requestParameters.redirectUrl]
+                                                  clientID:requestParameters.clientId
+                                              clientSecret:requestParameters.clientSecret
+                                                    scopes:requestParameters.scopes
+                                              refreshToken:requestParameters.refreshToken
+                                              codeVerifier:requestParameters.codeVerifier
+                                      additionalParameters:requestParameters.additionalParameters];
     [OIDAuthorizationService performTokenRequest:tokenRequest
                                         callback:^(OIDTokenResponse *_Nullable response,
-                                                   NSError *_Nullable error) {
+                                                NSError *_Nullable error) {
                                             if (response) {
                                                 result([self processResponses:response authResponse:nil]);                                           } else {
-                                                    NSString *message = [NSString stringWithFormat:TOKEN_ERROR_MESSAGE_FORMAT, [error localizedDescription]];
-                                                    [self finishWithError:TOKEN_ERROR_CODE message:message result:result];
-                                                }
+                                                NSString *message = [NSString stringWithFormat:TOKEN_ERROR_MESSAGE_FORMAT, [error localizedDescription]];
+                                                [self finishWithError:TOKEN_ERROR_CODE message:message result:result];
+                                            }
                                         }];
 }
 
@@ -307,25 +302,21 @@ NSString *const AUTHORIZE_ERROR_MESSAGE_FORMAT = @"Failed to authorize: %@";
     if(tokenResponse.tokenType) {
         [processedResponses setValue:tokenResponse.tokenType forKey:@"tokenType"];
     }
-    
+
     return processedResponses;
 }
 
 
-- (BOOL)application:(UIApplication *)application
+- (BOOL)application:(NSApplication *)application
             openURL:(NSURL *)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+//    return [self application:application openURL:url options:@{}];
     if ([_currentAuthorizationFlow resumeExternalUserAgentFlowWithURL:url]) {
         _currentAuthorizationFlow = nil;
         return YES;
     }
-    
+
     return NO;
-}
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
-    return [self application:application openURL:url options:@{}];
 }
 @end
