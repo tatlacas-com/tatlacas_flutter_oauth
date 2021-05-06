@@ -13,16 +13,16 @@ class AuthService  {
   Stream<bool> get accessTokenValidStream =>
       _accessTokenValidStreamController.stream;
   static const String AccessTokenKey = "ndaza-manager-access-token";
-  static String _accessToken;
+  static String? _accessToken;
 
-  static String get accessToken => _accessToken;
+  static String? get accessToken => _accessToken;
 
 
   Future logout() async {
   }
-  static const String clientId = 'tatlacas-stay-manager';
-  static const String redirectUrl = 'com.tatlacas.app.ios.stay.manager:/oauthredirect';
-  static const String issuer = 'https://192.168.100.18:5002';
+  static const String clientId = 'tatlacas-ndaza-manager';
+  static const String redirectUrl = 'com.tatlacas.app.macos.ndaza.manager://oauthredirect';
+  static const String issuer = 'http://192.168.100.18:5004/';
   static const List<String> scopes = [
     'openid',
     'profile',
@@ -31,10 +31,10 @@ class AuthService  {
     'user_roles'
   ];
 
-  Future<String> authenticate() async {
+  Future<String?> authenticate() async {
     FlutterAppAuth appAuth = FlutterAppAuth();
 
-    final AuthorizationTokenResponse result =
+    final AuthorizationTokenResponse? result =
         await appAuth.authorizeAndExchangeCode(
       AuthorizationTokenRequest(
        clientId,
