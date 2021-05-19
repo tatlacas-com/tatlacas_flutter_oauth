@@ -35,6 +35,8 @@ flutter:
         pluginClass: TatlacasFlutterOauthPlugin
       macos:
         pluginClass: TatlacasFlutterOauthPlugin
+      windows:
+        pluginClass: TatlacasFlutterOauthPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
