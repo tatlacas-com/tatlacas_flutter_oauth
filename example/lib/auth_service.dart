@@ -20,15 +20,12 @@ class AuthService  {
 
   Future logout() async {
   }
-  static const String clientId = 'tatlacas-ndaza-manager';
-  static const String redirectUrl = 'com.tatlacas.app.macos.ndaza.manager://oauthredirect';
-  static const String issuer = 'http://192.168.100.18:5004/';
+  static const String clientId = '639679b5-5e0a-4198-a444-ee28ddea01f6';
+  static const String redirectUrl = 'com.tatlacas.app.droid.ndaza.manager://oauthredirect';
+  static const String issuer = 'https://login.microsoftonline.com/b6e01ed4-0b7a-47a6-965e-817997ec2436/v2.0';
   static const List<String> scopes = [
     'openid',
-    'profile',
-    'offline_access',
-    'manager-api',
-    'user_roles'
+    'email',
   ];
 
   Future<String?> authenticate() async {
