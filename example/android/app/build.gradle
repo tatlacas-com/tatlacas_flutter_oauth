@@ -32,9 +32,6 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
-        disable 'InvalidPackage'
-    }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -56,6 +53,9 @@ android {
         }
     }
     buildToolsVersion '30.0.3'
+    lint {
+        disable 'InvalidPackage'
+    }
 }
 
 flutter {
