@@ -28,7 +28,7 @@ class AuthorizationTokenRequest extends TokenRequest
           redirectUrl: redirectUrl,
           clientSecret: clientSecret,
           refreshToken: refreshToken,
-    codeVerifier: codeVerifier,
+          codeVerifier: codeVerifier,
           authorizationCode: authorizationCode,
           discoveryUrl: discoveryUrl,
           issuer: issuer,
@@ -64,11 +64,22 @@ class AuthorizationTokenRequest extends TokenRequest
     return AuthorizationTokenRequest(
       clientId: clientId ?? this.clientId!,
       redirectUrl: redirectUrl ?? this.redirectUrl!,
+      loginHint: loginHint ?? this.loginHint,
       clientSecret: clientSecret ?? this.clientSecret,
-      refreshToken: refreshToken ?? this.refreshToken,
-      grantType: grantType ?? this.grantType!,
-      authorizationCode: authorizationCode ?? this.authorizationCode,
       codeVerifier: codeVerifier ?? this.codeVerifier,
+      scopes: scopes ?? this.scopes,
+      serviceConfiguration: serviceConfiguration ?? this.serviceConfiguration,
+      additionalParameters: additionalParameters ?? this.additionalParameters,
+      issuer: issuer ?? this.issuer,
+      discoveryUrl: discoveryUrl ?? this.discoveryUrl,
+      authorizationCode: authorizationCode ?? this.authorizationCode,
+      refreshToken: refreshToken ?? this.refreshToken,
+      promptValues: promptValues ?? this.promptValues,
+      grantType: grantType ?? this.grantType!,
+      allowInsecureConnections:
+          allowInsecureConnections ?? this.allowInsecureConnections!,
+      preferEphemeralSession:
+          preferEphemeralSession ?? this.preferEphemeralSession!,
     );
   }
 }
