@@ -6,24 +6,30 @@ import 'token_request.dart';
 /// Details required for a combined authorization and code exchange request
 class AuthorizationTokenRequest extends TokenRequest
     with AuthorizationParameters {
-  AuthorizationTokenRequest(
-    String clientId,
-    String redirectUrl, {
+  AuthorizationTokenRequest({
+    required String clientId,
+    required String redirectUrl,
     String? loginHint,
     String? clientSecret,
     List<String>? scopes,
     AuthorizationServiceConfiguration? serviceConfiguration,
     Map<String, String>? additionalParameters,
     String? issuer,
+    String? refreshToken,
+    String? codeVerifier,
+    String? authorizationCode,
     String? discoveryUrl,
     List<String>? promptValues,
     String grantType = GrantType.authorizationCode,
     bool allowInsecureConnections = false,
     bool preferEphemeralSession = false,
   }) : super(
-          clientId,
-          redirectUrl,
+          clientId: clientId,
+          redirectUrl: redirectUrl,
           clientSecret: clientSecret,
+          refreshToken: refreshToken,
+    codeVerifier: codeVerifier,
+          authorizationCode: authorizationCode,
           discoveryUrl: discoveryUrl,
           issuer: issuer,
           scopes: scopes,
@@ -35,5 +41,34 @@ class AuthorizationTokenRequest extends TokenRequest
     this.loginHint = loginHint;
     this.promptValues = promptValues;
     this.preferEphemeralSession = preferEphemeralSession;
+  }
+
+  AuthorizationTokenRequest copyWith({
+    String? clientId,
+    String? redirectUrl,
+    String? loginHint,
+    String? clientSecret,
+    String? codeVerifier,
+    List<String>? scopes,
+    AuthorizationServiceConfiguration? serviceConfiguration,
+    Map<String, String>? additionalParameters,
+    String? issuer,
+    String? discoveryUrl,
+    String? authorizationCode,
+    String? refreshToken,
+    List<String>? promptValues,
+    String? grantType,
+    bool? allowInsecureConnections,
+    bool? preferEphemeralSession,
+  }) {
+    return AuthorizationTokenRequest(
+      clientId: clientId ?? this.clientId!,
+      redirectUrl: redirectUrl ?? this.redirectUrl!,
+      clientSecret: clientSecret ?? this.clientSecret,
+      refreshToken: refreshToken ?? this.refreshToken,
+      grantType: grantType ?? this.grantType!,
+      authorizationCode: authorizationCode ?? this.authorizationCode,
+      codeVerifier: codeVerifier ?? this.codeVerifier,
+    );
   }
 }
