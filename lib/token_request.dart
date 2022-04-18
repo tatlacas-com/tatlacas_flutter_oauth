@@ -3,9 +3,9 @@ import 'common_request_details.dart';
 
 /// Details for a token exchange request.
 class TokenRequest with CommonRequestDetails {
-  TokenRequest(
-    String clientId,
-    String redirectUrl, {
+  TokenRequest({
+    required String clientId,
+    required String redirectUrl,
     this.clientSecret,
     List<String>? scopes,
     AuthorizationServiceConfiguration? serviceConfiguration,

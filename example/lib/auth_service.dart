@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:tatlacas_flutter_oauth/app_auth_export.dart';
 import 'package:tatlacas_flutter_oauth/authorization_token_request.dart';
 import 'package:tatlacas_flutter_oauth/authorization_token_response.dart';
 import 'package:tatlacas_flutter_oauth/flutter_appauth.dart';
 
-
-class AuthService  {
+class AuthService {
   final _accessTokenValidStreamController = StreamController<bool>();
 
   Stream<bool> get accessTokenValidStream =>
@@ -17,12 +15,12 @@ class AuthService  {
 
   static String? get accessToken => _accessToken;
 
-
-  Future logout() async {
-  }
+  Future logout() async {}
   static const String clientId = '639679b5-5e0a-4198-a444-ee28ddea01f6';
-  static const String redirectUrl = 'com.tatlacas.app.droid.ndaza.manager://oauthredirect';
-  static const String issuer = 'https://login.microsoftonline.com/b6e01ed4-0b7a-47a6-965e-817997ec2436/v2.0';
+  static const String redirectUrl =
+      'com.tatlacas.app.droid.ndaza.manager://oauthredirect';
+  static const String issuer =
+      'https://login.microsoftonline.com/b6e01ed4-0b7a-47a6-965e-817997ec2436/v2.0';
   static const List<String> scopes = [
     'openid',
     'email',
@@ -34,8 +32,8 @@ class AuthService  {
     final AuthorizationTokenResponse? result =
         await appAuth.authorizeAndExchangeCode(
       AuthorizationTokenRequest(
-       clientId,
-        redirectUrl,
+        clientId: clientId,
+        redirectUrl: redirectUrl,
         allowInsecureConnections: true,
         promptValues: ['login'],
         issuer: issuer,
@@ -45,9 +43,7 @@ class AuthService  {
     return result?.accessToken;
   }
 
-  Future confirmAuth() async {
-
-  }
+  Future confirmAuth() async {}
 
   @override
   void dispose() {
