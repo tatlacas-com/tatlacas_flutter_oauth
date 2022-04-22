@@ -16,15 +16,11 @@ class AuthService {
   static String? get accessToken => _accessToken;
 
   Future logout() async {}
-  static const String clientId = '639679b5-5e0a-4198-a444-ee28ddea01f6';
-  static const String redirectUrl =
-      'com.tatlacas.app.droid.ndaza.manager://oauthredirect';
-  static const String issuer =
-      'https://login.microsoftonline.com/b6e01ed4-0b7a-47a6-965e-817997ec2436/v2.0';
-  static const List<String> scopes = [
-    'openid',
-    'email',
-  ];
+  static const String clientId = 'e7fa4c20-33b1-4da6-a5c8-8b638c834079';
+  static const String redirectUrl = 'com.tatlacas.bullraise://oauthredirect';
+  static const String discoveryUrl =
+      'https://bullraise.b2clogin.com/bullraise.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN';
+  static const List<String> scopes = ['openid', 'email', 'profile'];
 
   Future<String?> authenticate() async {
     FlutterAppAuth appAuth = FlutterAppAuth();
@@ -32,13 +28,26 @@ class AuthService {
     final AuthorizationTokenResponse? result =
         await appAuth.authorizeAndExchangeCode(
       AuthorizationTokenRequest(
+        clientId: 'e7fa4c20-33b1-4da6-a5c8-8b638c834079',
+        //todo save this somewhere, not here
+        redirectUrl: 'com.tatlacas.bullraise://oauthredirect',
+        promptValues: ['login'],
+        serviceConfiguration: AuthorizationServiceConfiguration(
+            "https://bullraise.b2clogin.com/bullraise.onmicrosoft.com/oauth2/v2.0/authorize",
+            "https://bullraise.b2clogin.com/bullraise.onmicrosoft.com/oauth2/v2.0/token?p=b2c_1a_signup_signin"),
+        additionalParameters: {"p": "b2c_1a_signup_signin"},
+        // discoveryUrl:
+        //     'https://bullraise.b2clogin.com/bullraise.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_SIGNUP_SIGNIN',
+        scopes: ['openid', 'email', 'profile'],
+      ),
+      /* AuthorizationTokenRequest(
         clientId: clientId,
         redirectUrl: redirectUrl,
         allowInsecureConnections: true,
         promptValues: ['login'],
-        issuer: issuer,
+        discoveryUrl: discoveryUrl,
         scopes: scopes,
-      ),
+      ),*/
     );
     return result?.accessToken;
   }
