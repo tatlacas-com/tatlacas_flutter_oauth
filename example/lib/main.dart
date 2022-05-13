@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Okay okay'),
-              OutlineButton(
+              TextButton(
                 onPressed: () {
                   _authService.authenticate();
                 },

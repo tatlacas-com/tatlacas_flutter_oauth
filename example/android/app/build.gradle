@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion flutter.compileSdkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -37,10 +37,10 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.tatlacas.plugins.tatlacas.flutter.tatlacas_flutter_oauth_example"
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [
+        manifestPlaceholders += [
                 'appAuthRedirectScheme': 'com.tatlacas.app.droid.stay.manager'
         ]
     }
@@ -51,10 +51,6 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
-    }
-    buildToolsVersion '30.0.3'
-    lint {
-        disable 'InvalidPackage'
     }
 }
 

@@ -55,7 +55,7 @@ public class TatlacasFlutterOauthPlugin: FlutterPlugin, MethodCallHandler,Activi
    */
   fun registerWith(registrar: Registrar) {
     val plugin = TatlacasFlutterOauthPlugin()
-    plugin.setActivity(registrar.activity())
+    plugin.setActivity(registrar.activity() as Activity)
     plugin.onAttachedToEngine(registrar.context(), registrar.messenger())
     registrar.addActivityResultListener(plugin)
     registrar.addViewDestroyListener {
@@ -118,7 +118,7 @@ public class TatlacasFlutterOauthPlugin: FlutterPlugin, MethodCallHandler,Activi
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    val arguments = call.arguments<Map<String, Any?>>()
+    val arguments = call.arguments<Map<String, Any?>>() as Map<String, Any?>
     when (call.method) {
       AUTHORIZE_AND_EXCHANGE_CODE_METHOD -> try {
         checkAndSetPendingOperation(call.method, result)
