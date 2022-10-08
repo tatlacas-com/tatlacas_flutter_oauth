@@ -52,6 +52,7 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    namespace 'com.tatlacas.plugins.tatlacas.flutter.tatlacas_flutter_oauth_example'
 }
 
 flutter {
